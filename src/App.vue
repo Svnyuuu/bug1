@@ -3,21 +3,24 @@ import HelloWorld from './components/HelloWorld.vue'
 </script> -->
 
 <script>
-import { ref } from "vue";
 import TodoAdd from "./components/TodoAdd";
 import TodoFilter from "./components/TodoFilter";
 import TodoList from "./components/TodoList";
-
+import useTodos from "@/composables/useTodos.js";
+import useFilteredTodos from "@/composables/useFilteredTodos.js";
 
 export default {
   name: "App",
   components: { TodoAdd, TodoFilter, TodoList},
   setup(){
-    const todos = ref([]);
-    const addTodo = (todo) => todos.value.push(todo);
+    const { todos, addTodo } = useTodos();
+    const { filter, filteredTodos } = useFilteredTodos(todos);
+    
     return {
       todos,
       addTodo,
+      filter,
+      filteredTodos,
     };
   },
 };
@@ -76,9 +79,9 @@ export default {
       </div>
        -->
 
-      <todo-add tid="todos/length" @add-todo="addTodo" />
-      <todo-filter />
-      <todo-list :todos="todos" />
+      <todo-add :tid="todos/length" @add-todo="addTodo" />
+      <todo-filter :selected="filter" @change-filter="filter = $event" />
+      <todo-list :todos="filteredTodos" />
 
     </div>
   </main>

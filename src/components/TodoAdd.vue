@@ -1,33 +1,43 @@
 <template>
       <div class = "input-add">
-        <input type = "text" name = "todo" v-model="todoContent" />
-        <button>
+        <input
+          type = "text" 
+          name = "todo" 
+          v-model="todoContent" 
+          @keyup.enter="emitAddTodo"/>
+        <button @click="emitAddTodo">
           <i class = "plus"></i>
         </button>
       </div>
 </template>
 
 <script>
+    import { ref } from 'vue' 
     export default {
         name: "TodoAdd",
         setup(props, context) {
-          const todoContent = ref("");
+          return useEmitAddTodo(props.tid, context.emit);
+        },
+    };
+    
+    function useEmitAddTodo(tid, emit) {
+      const todoContent = ref("");
 
           const emitAddTodo = () => {
             const todo = {
-              id: props.tid,
+              id: tid,
               content: todoContent.value,
               completed: false,
             };
-            context.emit("add-todo", todo);
+            emit("add-todo", todo);
             todoContent.value = "";
           };
           return {
             todoContent,
             emitAddTodo,
           };
-        },
-    };
+    }
+
 </script>
 
 <style>
